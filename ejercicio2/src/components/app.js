@@ -93,24 +93,35 @@ export default class App extends Component {
   render() {
     return (
       <div className='app'>
-        <h1 className='titulo'>Inserte los puntuajes</h1>
+        <div className='header'>
+          <h1 className='titulo' data-text='Inserte los puntuajes'>Inserte los puntuajes</h1>
+        </div>
+        
         <br/>
-        <input 
-          type='file' 
-          id='file1'
-          className='inputfile'
-          multiple={false}
-          onChange={ this.readFile }
-        />
-        <label htmlFor='file1' className='labelInputFile'><i className="fas fa-file-upload"></i> <span>Seleccionar archivo</span></label>
-        <span className='nameFileSpan'>{this.state.namefile}</span>
+        <div className='container'>
+          <div>
+          <input 
+            type='file' 
+            id='file1'
+            className='inputfile'
+            multiple={false}
+            onChange={ this.readFile }
+          />
+          <label htmlFor='file1' className='labelInputFile'><i className="fas fa-file-upload"></i> <span>Seleccionar archivo</span></label>
+          </div>
+          <span className='nameFileSpan'>{this.state.namefile}</span>
+        </div>
+        
         <br/>
-        <button
-          className='buttonResults'
-          onClick={ this.checkResult }
-        >
-          ¿Quíen es el ganador?
-        </button> 
+        <div className='buttonContainer'> 
+          <button
+            className='buttonResults'
+            onClick={ this.checkResult }
+          >
+            ¿Quíen es el ganador?
+          </button> 
+        </div>
+        
       </div>
     );
   }
