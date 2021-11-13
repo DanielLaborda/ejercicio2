@@ -17,9 +17,18 @@ export default class App extends Component {
     //comprobamos el resultado
     const lines = [];
     let fileCorrupt = false;
-
-    this.state.message.split('\r\n').map((i) => {
-      lines.push(String(i));
+    let l = '';
+    //leeremos el mensaje 
+    //nos aseguramos que tiene 4 lineas y los datos posibles
+    
+    this.state.message.split('\n').map((i) => {
+      if (i.indexOf('\r') >= 0) {
+        // si tiene este caracter lo reemplazaremos y borrraremos
+        l = i.replace('\r','');
+        lines.push(String(l));
+      } else {
+        lines.push(String(i));
+      }
     });
 
     //comprobamos que sea un numero entero
@@ -31,36 +40,55 @@ export default class App extends Component {
       }
     } else fileCorrupt = true;
     
-    let results = []
+    let results = [];
+    let scores = [];
+    let scorepj1 = 0;
+    let scorepj2 = 0;
     // fichero comprobado
     if (fileCorrupt == false) {
       let points = [];
       let advantage = 0;
-      let winner = "";
-      let gameWinner = [];
+      let leader = 0;
+      //Creamos el marcador acumulativo
       for (var i = 1; i < lines.length; i++) {
         points = lines[i].split(" ");
-        advantage = points[0] - points[1];
-        if (advantage > 0) {
-          winner = 1;
+        if(scores.length === 0) {
+          advantage = points[0] - points[1];
+          if (advantage > 0) {
+            leader = 1;
+          } else {
+            leader = 2;
+            advantage = advantage * -1;
+          }
+          scores.push(["Ronda"+i, parseInt(points[0]), parseInt(points[1]), leader, advantage ]);
         } else {
-          winner = 2;
-          advantage = advantage * -1;
-        }
-        results.push(["Ronda"+i, points[0], points[1], advantage, winner]);
-      }
+          scorepj1 = parseInt(points[0]) + parseInt(scores[scores.length-1][1]);
+          scorepj2 = parseInt(points[1]) + parseInt(scores[scores.length-1][2]);
 
-      for (var x = 0; x < lines.length - 1; x++) { 
-        if(gameWinner.length == 0 ){
-          gameWinner = results[x];
-        } else if (gameWinner[3] < results[x][3]) { 
-          //necesito sobreescribir
-          gameWinner = results[x];
-          console.log("resultado: " + results[x]);
-          console.log("ganador: " + gameWinner);
+          advantage = scorepj1 - scorepj2;
+          if (advantage > 0) {
+            leader = 1;
+          } else {
+            leader = 2;
+            advantage = advantage * -1;
+          }
+          scores.push(["Ronda"+i, scorepj1, scorepj2, leader, advantage ]);
         }
+        
       }
-      this.createFile(gameWinner[4], gameWinner[3]);//la posicion 4 es el jugador que gana y la 3 la ventaja
+      //Comprobamos quien es el ganador
+      scores.map((score) =>{
+        if(results.length === 0) {
+          //si aun no hay 
+          results = [score[3], score[4]];
+        } else {
+          // si la ventaja es mayor que la que hay anterior
+          if(score[4] > results[1]) {
+            results = [score[3], score[4]];
+          }
+        }
+      });
+      this.createFile(results[0], results[1]);//la posicion 4 es el jugador que gana y la 3 la ventaja
 
     } else alert("Fichero equivocado \r\n O necesitamos el fichero correcto");
   
