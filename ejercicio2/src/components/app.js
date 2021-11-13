@@ -82,7 +82,7 @@ export default class App extends Component {
           //si aun no hay 
           results = [score[3], score[4]];
         } else {
-          // si la ventaja es mayor que la que hay anterior
+          // si la ventaja es mayor que la que hay anterior ganador
           if(score[4] > results[1]) {
             results = [score[3], score[4]];
           }
